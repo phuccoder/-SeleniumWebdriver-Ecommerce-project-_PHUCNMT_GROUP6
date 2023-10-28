@@ -70,7 +70,7 @@ public class Test04 {
                 System.out.println("Products are not reflected in the popup window.");
 
             }
-            captureScreenshot(driver, "popup_window_not_displayed");
+            captureScreenshot(driver, "popup_window");
 
             Thread.sleep(1000);
 
