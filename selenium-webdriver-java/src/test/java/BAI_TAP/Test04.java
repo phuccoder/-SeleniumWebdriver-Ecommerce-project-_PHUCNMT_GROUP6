@@ -88,7 +88,7 @@ public class Test04 {
         }
     }
 
-    private void captureScreenshot(WebDriver driver, String screenshotName) {
+    private static void captureScreenshot(WebDriver driver, String screenshotName) {
         TakesScreenshot ts = (TakesScreenshot) driver;
         File source = ts.getScreenshotAs(OutputType.FILE);
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
