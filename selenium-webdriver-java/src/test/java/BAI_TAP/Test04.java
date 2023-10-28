@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class Test04 {
     @Test
-    public void testTc04() {
+    public static void testTc04() {
         int scc = 0;
         String testCaseName = "Test04";
 
