@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class Test03 {
     @Test
-    public void testTc03() {
+    public static void testTc03() {
         int scc = 0;
         String testCaseName = "Test03";
 
