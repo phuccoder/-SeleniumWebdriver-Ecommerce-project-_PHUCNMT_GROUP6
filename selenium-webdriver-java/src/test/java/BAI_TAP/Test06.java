@@ -39,7 +39,7 @@ public class Test06 {
             //Go to http://live.techpanda.org/
             driver.get("http://live.techpanda.org/");
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //Click on my account link
@@ -51,18 +51,18 @@ public class Test06 {
                 driver.switchTo().window(handle);
             }
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //Login in application using previously created credential
             loginPage.enterEmail(emailAddress);
 
-            //debug purpose only
+            //timing
             Thread.sleep(1000);
 
             loginPage.enterPassword(password);
 
-            //debug purpose only
+            //timing
             Thread.sleep(1000);
 
             //Click Login
@@ -73,36 +73,36 @@ public class Test06 {
                 driver.switchTo().window(handle);
             }
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //Click on MY WISHLIST link
             driver.findElement(By.linkText("MY WISHLIST")).click();
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //In next page, Click ADD TO CART link
             CartPage cartPage = new CartPage(driver);
             cartPage.clickAddToCart();
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //Enter general shipping country, state/province and zip for the shipping cost estimate
             cartPage.chooseCountry();
 
-            //debug purpose only
+            //timing
             Thread.sleep(1000);
 
             cartPage.chooseState();
 
-            //debug purpose only
+            //timing
             Thread.sleep(1000);
 
             cartPage.zipEmail(zip);
 
-            //debug purpose only
+            //timing
             Thread.sleep(1000);
 
             //Click Estimate
@@ -112,7 +112,8 @@ public class Test06 {
 
             //Step 8. Verify Shipping cost generated
             String successMessage = driver.findElement(By.cssSelector("label[for='s_method_flatrate_flatrate']")).getText();
-            if (successMessage.contains("Fixed - "+"$5.00")) {
+            String flatRateMoneyText = cartPage.flatRateMoneyCheck();
+            if (successMessage.contains("Fixed - "+flatRateMoneyText)) {
                 System.out.println("Shipping cost generated success");
                 System.out.println(successMessage);
 
@@ -128,12 +129,12 @@ public class Test06 {
             //Select Shipping Cost, Update Total
             cartPage.clickFlatRate();
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             cartPage.clickUpdateButton();
 
-            //debug purpose only
+            //timing
             Thread.sleep(2000);
 
             //Step10. Verify shipping cost is added to total
@@ -170,6 +171,8 @@ public class Test06 {
 
             //Step12a. Enter Billing Information, and click Continue
             CheckOutPage checkoutPage = new CheckOutPage(driver);
+            checkoutPage.differenceAddressClick();
+            Thread.sleep(2000);
             checkoutPage.selectAddress(address);
             Thread.sleep(4000);
             //Step12b. Enter Shipping Information, and click Continue
@@ -185,6 +188,8 @@ public class Test06 {
             Thread.sleep(4000);
             driver.findElement(By.cssSelector("button[onclick='billing.save()']")).click();
             Thread.sleep(4000);
+            driver.findElement(By.cssSelector("button[onclick='shipping.save()'] span span")).click();
+            Thread.sleep(2000);
 
             //Step13. In Shipping Method, Click Continue
             driver.findElement(By.xpath("//button[@onclick='shippingMethod.save()']")).click();
