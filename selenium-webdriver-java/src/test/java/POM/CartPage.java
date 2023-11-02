@@ -22,6 +22,8 @@ public class CartPage {
 
     By grandTotal = By.cssSelector("strong span[class='price']");
 
+    By flatRateMoneyText = By.cssSelector("label[for='s_method_flatrate_flatrate'] span[class='price']");
+
     public CartPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -58,6 +60,9 @@ public class CartPage {
         driver.findElement(updateTotalButton).click();
     }
 
+    public String flatRateMoneyCheck(){
+        return driver.findElement(flatRateMoneyText).getText();
+    }
     public String getSubtotal() {
         return driver.findElement(subtotalText).getText();
     }
