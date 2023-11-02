@@ -33,6 +33,8 @@ public class CheckOutPage {
 
     By faxInputLocator = By.id("billing:fax");
 
+    By differenceAddressSelector = By.cssSelector("label[for='billing:use_for_shipping_no']");
+
 
     public CheckOutPage(WebDriver driver) {
         this.driver = driver;
@@ -114,5 +116,7 @@ public class CheckOutPage {
         faxElement.clear();
         faxElement.sendKeys(fax);
     }
+
+    public void differenceAddressClick(){ driver.findElement(differenceAddressSelector).click();}
 
 }
