@@ -35,7 +35,7 @@ public class Test06 {
         //init web driver session
         WebDriver driver = driverFactory.getChromeDriver();
         try {
-
+            CartPage cartPage = new CartPage(driver);
             //Go to http://live.techpanda.org/
             driver.get("http://live.techpanda.org/");
 
@@ -77,13 +77,13 @@ public class Test06 {
             Thread.sleep(2000);
 
             //Click on MY WISHLIST link
-            driver.findElement(By.linkText("MY WISHLIST")).click();
+            cartPage.clickMyWishList();
 
             //timing
             Thread.sleep(2000);
 
             //In next page, Click ADD TO CART link
-            CartPage cartPage = new CartPage(driver);
+
             cartPage.clickAddToCart();
 
             //timing
@@ -111,15 +111,8 @@ public class Test06 {
             //Verify Shipping cost generated
 
             //Step 8. Verify Shipping cost generated
-            String successMessage = driver.findElement(By.cssSelector("label[for='s_method_flatrate_flatrate']")).getText();
-            String flatRateMoneyText = cartPage.flatRateMoneyCheck();
-            if (successMessage.contains("Fixed - "+flatRateMoneyText)) {
-                System.out.println("Shipping cost generated success");
-                System.out.println(successMessage);
+            cartPage.verifyShippingCost("Fixed - " + cartPage.flatRateMoneyCheck());
 
-            } else {
-                System.out.println("shipping cost generated unsuccessfully.");
-            }
             Thread.sleep(2000);
             //Screenshot
             File scrFile = ((TakesScreenshot)driver).getScreenshotAs(FILE);
@@ -138,21 +131,7 @@ public class Test06 {
             Thread.sleep(2000);
 
             //Step10. Verify shipping cost is added to total
-
-            String subtotal = cartPage.getSubtotal();
-            String shipping = cartPage.getShipping();
-            String grandTotal = cartPage.getGrandTotal();
-
-            double subtotalValue = Double.parseDouble(subtotal.replaceAll("[^\\d.]+", ""));
-            double shippingValue = Double.parseDouble(shipping.replaceAll("[^\\d.]+", ""));
-            double grandTotalValue = Double.parseDouble(grandTotal.replaceAll("[^\\d.]+", ""));
-
-            if (subtotalValue + shippingValue == grandTotalValue) {
-                System.out.println("Shipping cost is added to total. Grand Total matches Subtotal + Shipping.");
-                System.out.println(grandTotalValue);
-            } else {
-                System.out.println("Shipping cost is not added to total. Grand Total does not match Subtotal + Shipping.");
-            }
+            cartPage.verifyGrandTotal();
 
 
             //Screenshot
@@ -162,7 +141,7 @@ public class Test06 {
             Thread.sleep(2000);
 
             //Step11. Click "Proceed to Checkout"
-            driver.findElement(By.cssSelector("li[class='method-checkout-cart-methods-onepage-bottom'] button[title='Proceed to Checkout']")).click();
+            cartPage.clickProcedCheckOut();
             Thread.sleep(2000);
             for (String handle : driver.getWindowHandles()) {
                 driver.switchTo().window(handle);
@@ -186,40 +165,33 @@ public class Test06 {
             checkoutPage.selectCountry(country);
             checkoutPage.enterTelephone(telephone);
             Thread.sleep(4000);
-            driver.findElement(By.cssSelector("button[onclick='billing.save()']")).click();
+            checkoutPage.clickBillingButton();
             Thread.sleep(4000);
-            driver.findElement(By.cssSelector("button[onclick='shipping.save()'] span span")).click();
+            checkoutPage.clickSaveShippingInformation();
             Thread.sleep(2000);
 
             //Step13. In Shipping Method, Click Continue
-            driver.findElement(By.xpath("//button[@onclick='shippingMethod.save()']")).click();
+            checkoutPage.clickSaveShippingMethod();
             Thread.sleep(4000);
 
             //Step14. In Payment Information select 'Check/Money Order' radio button. Click Continue
-            driver.findElement(By.xpath("//label[normalize-space()='Check / Money order']")).click();
-            driver.findElement(By.xpath("//button[@onclick='payment.save()']")).click();
+            checkoutPage.selectPaymentMethod();
+            checkoutPage.clickPaymentButton();
             Thread.sleep(4000);
 
             //Step15. Click 'PLACE ORDER' button
-            driver.findElement(By.xpath("//button[@title='Place Order']")).click();
+            checkoutPage.clickPlaceOrder();
             Thread.sleep(3000);
 
             //Step16. Verify Oder is generated. Note the order number
-            String successOrder = driver.findElement(By.xpath("//h1[normalize-space()='Your order has been received.']")).getText();
-            String orderNumber = driver.findElement(By.cssSelector("body > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > p:nth-child(3)")).getText();
-            if (successOrder.contains("YOUR ORDER HAS BEEN RECEIVED")) {
-                System.out.println("ORDER SUCCESS");
-                System.out.println(successOrder);
-                System.out.println("YOUR ORDER NUMBER IS : " + orderNumber);
+            checkoutPage.verifyOrder();
 
-            } else {
-                System.out.println("ORDER FAILED");
-            }
             Thread.sleep(2000);
             scrFile = ((TakesScreenshot)driver).getScreenshotAs(FILE);
             png = ("E:\\selenium-webdriver-java\\screenshots\\" + "TC06" + "_3.png");
             FileUtils.copyFile(scrFile, new File(png));
             Thread.sleep(2000);
+            checkoutPage.orderNumber();
 
         } catch (Exception e){
             e.printStackTrace();
