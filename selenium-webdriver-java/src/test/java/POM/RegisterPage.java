@@ -18,6 +18,10 @@ public class RegisterPage {
     By confirmPasswordInputLocator = By.id("confirmation");
     By registerButton = By.cssSelector("button[title='Register']");
 
+    By registerMessage = By.cssSelector("li.success-msg span");
+
+    By registerWelcome = By.cssSelector("p[class='welcome-msg']");
+
     public RegisterPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -69,4 +73,16 @@ public class RegisterPage {
     public void clickRegister() {
         driver.findElement(registerButton).click();
     }
+
+    public String registerMessageText(){
+        WebElement successMessage = driver.findElement(registerMessage);
+        return successMessage.getText();
+    }
+
+    public String registerWelcomeText(){
+        WebElement successWelcome = driver.findElement(registerWelcome);
+        return successWelcome.getText();
+    }
+
+
 }

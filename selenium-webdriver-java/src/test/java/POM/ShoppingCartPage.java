@@ -46,6 +46,10 @@ public class ShoppingCartPage {
 
     By iPhoneInPopup = By.cssSelector("h2[class='product-name'] a[title='IPhone']");
 
+    By tvMenu = By.linkText("TV");
+
+    By wishListAdd = By.xpath("(//span[contains(text(),'Share Wishlist')])[1]");
+
    public ShoppingCartPage(WebDriver driver){
        this.driver = driver;
    }
@@ -79,6 +83,7 @@ public class ShoppingCartPage {
     public String getGrandTotal() {
         return driver.findElement(grandTotalText).getText();
     }
+
 
     public boolean verifyGrandTotal() {
         String subtotal = getSubtotal();
@@ -175,6 +180,14 @@ public class ShoppingCartPage {
     public String verifyIPhoneInPopupText() {
         WebElement iPhoneInPopupElement = driver.findElement(iPhoneInPopup);
         return iPhoneInPopupElement.getText();
+    }
+
+    public void TVMenuClick(){
+       driver.findElement(tvMenu).click();
+    }
+
+    public void WishListClick(){
+       driver.findElement(wishListAdd).click();
     }
 }
 

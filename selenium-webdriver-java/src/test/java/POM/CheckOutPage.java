@@ -50,6 +50,8 @@ public class CheckOutPage {
 
     By orderNumberText = By.xpath("//div[@class='main-container col1-layout']//p[1]");
 
+
+
     public CheckOutPage(WebDriver driver) {
         this.driver = driver;
     }
