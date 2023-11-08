@@ -11,7 +11,11 @@ public class SharedPage {
 
     By messageInputLocator = By.id("message");
 
+    By shareWishlist = By.cssSelector("button[title='Share Wishlist']");
 
+    By shareWishListMessage = By.xpath("(//span[normalize-space()='Your Wishlist has been shared.'])[1]");
+
+    By addWishlist = By.xpath("(//a[@class='link-wishlist'][normalize-space()='Add to Wishlist'])[1]");
     public SharedPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -28,4 +32,16 @@ public class SharedPage {
         messageElement.sendKeys(message);
     }
 
+    public void ShareWishListClick(){
+        driver.findElement(shareWishlist).click();
+    }
+
+    public String ShareWishListMessageText(){
+        WebElement successMessage = driver.findElement(shareWishListMessage);
+        return successMessage.getText();
+    }
+
+    public void AddToWishListClick(){
+        driver.findElement(addWishlist).click();
+    }
 }
