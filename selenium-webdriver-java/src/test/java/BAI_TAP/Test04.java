@@ -1,5 +1,6 @@
 package BAI_TAP;
 
+import POM.ShoppingCartPage;
 import driver.driverFactory;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.openqa.selenium.OutputType.FILE;
+
 public class Test04 {
     @Test
     public static void testTc04() {
@@ -21,27 +24,24 @@ public class Test04 {
         WebDriver driver = driverFactory.getChromeDriver();
 
         try {
+            ShoppingCartPage shoppingCartPage = new ShoppingCartPage(driver);
             // Bước 1. Go to http://live.techpanda.org/
             driver.get("http://live.techpanda.org");
             Thread.sleep(1000);
 
             // Bước 2. Click on MOBILE menu
-            driver.findElement(By.linkText("MOBILE")).click();
+            shoppingCartPage.MobileClick();
 
             // Timing
             Thread.sleep(1000);
 
             // Bước 3. In mobile products list, click on "Add To Compare" for Sony Xperia & iPhone
-            WebElement sonyXperiaCompare = driver.findElement(By.xpath("(//a[@class='link-compare'][normalize-space()='Add to Compare'])[2]"));
-            sonyXperiaCompare.click();
-
-            WebElement iPhoneCompare = driver.findElement(By.xpath("(//a[@class='link-compare'][normalize-space()='Add to Compare'])[3]"));
-            iPhoneCompare.click();
-
+            shoppingCartPage.sonyXperiaCompareClick();
+            shoppingCartPage.iPhoneCompareClick();
             Thread.sleep(1000);
 
             // Bước 4. Click on "COMPARE" button. A popup window opens
-            driver.findElement(By.xpath("(//span[contains(text(),'Compare')])[2]")).click();
+            shoppingCartPage.compareButtonClick();
 
             // Chuyển tới cửa sổ popup
             String parentWindowHandle = driver.getWindowHandle();
@@ -54,23 +54,26 @@ public class Test04 {
             Thread.sleep(1000);
 
             // Bước 5. Verify the pop-up window and check that the products are reflected in it
-            WebElement popupHeading = driver.findElement(By.xpath("(//h1[normalize-space()='Compare Products'])[1]"));
-            if (popupHeading.isDisplayed()) {
-                System.out.println("Popup window opened with heading: " + popupHeading.getText());
+
+            if (shoppingCartPage.verifyPopupHeading()) {
+                System.out.println("Popup window opened with heading: " + shoppingCartPage.verifyPopupHeadingText());
             } else {
                 System.out.println("Popup window not displayed.");
 
             }
+            Thread.sleep(2000);
 
-            WebElement sonyXperiaInPopup = driver.findElement(By.xpath("(//a[normalize-space()='Sony Xperia'])[1]"));
-            WebElement iPhoneInPopup = driver.findElement(By.xpath("(//a[normalize-space()='IPhone'])[1]"));
-            if (sonyXperiaInPopup.isDisplayed() && iPhoneInPopup.isDisplayed()) {
-                System.out.println("Products are reflected in the popup window:" + sonyXperiaInPopup.getText() + " " + iPhoneInPopup.getText());
+
+            if (shoppingCartPage.verifySonyXperiaInPopup() && shoppingCartPage.verifyIPhoneInPopup()) {
+                System.out.println("Products are reflected in the popup window:" + shoppingCartPage.verifySonyXperiaInPopupText() + " - " + shoppingCartPage.verifyIPhoneInPopupText());
             } else {
                 System.out.println("Products are not reflected in the popup window.");
 
             }
-            captureScreenshot(driver, "popup_window");
+            Thread.sleep(2000);
+            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(FILE);
+            String png = ("E:\\selenium-webdriver-java\\screenshots\\" + "TC04" + "-Popup-Screen.png");
+            FileUtils.copyFile(scrFile, new File(png));
 
             Thread.sleep(1000);
 
@@ -88,17 +91,5 @@ public class Test04 {
         }
     }
 
-    private static void captureScreenshot(WebDriver driver, String screenshotName) {
-        TakesScreenshot ts = (TakesScreenshot) driver;
-        File source = ts.getScreenshotAs(OutputType.FILE);
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String screenshotFileName = screenshotName + "_" + timeStamp + ".png";
-        File destination = new File(System.getProperty("user.dir") + "/screenshots/" + screenshotFileName);
-        try {
-            FileUtils.copyFile(source, destination);
-            System.out.println("Screenshot saved: " + screenshotFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }

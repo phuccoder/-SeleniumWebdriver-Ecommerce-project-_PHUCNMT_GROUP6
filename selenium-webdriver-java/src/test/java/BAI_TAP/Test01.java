@@ -1,5 +1,6 @@
 package BAI_TAP;
 
+import POM.HomePage;
 import driver.driverFactory;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -11,6 +12,8 @@ import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import java.io.File;
+
+import static org.openqa.selenium.OutputType.FILE;
 
 @Test
 public class Test01 {
@@ -25,39 +28,38 @@ public class Test01 {
             // Bước 1. Go to http://live.techpanda.org/
             driver.get("http://live.techpanda.org/");
 
+            HomePage homePage = new HomePage(driver);
+
             // Bước 2. Verify Title of the page
-            String demoSite = driver.findElement(By.cssSelector("h2")).getText();
+            String demoSite = homePage.getTitleText();
             System.out.println(demoSite);
 
             try {
-                AssertJUnit.assertEquals("This is demo site for ", demoSite);
+                AssertJUnit.assertTrue(homePage.verifyDemoSiteTitle());
             } catch (Error e) {
                 verificationError.append(e.toString());
             }
+
 
             // timing
             Thread.sleep(1000);
 
             // Bước 3. Click on -> MOBILE -> menu
-            driver.findElement(By.linkText("MOBILE")).click();
+            homePage.clickMobileMenu();
             // timing
             Thread.sleep(1000);
 
             // Bước 4. In the list of all mobile, select SORT BY -> dropdown as name
-            new Select(driver.findElement(By.cssSelector("select[title=\"Sort By\"]"))).selectByVisibleText("Name");
+            homePage.selectSortByName();
 
             // timing
             Thread.sleep(1000);
 
             // Bước 5. Verify all products are sorted by name
-            scc = (scc + 1);
-
-            // Đặt tên cho file ảnh png dựa trên tên của test case
-            String png = (testCaseName + ".png");
-
-            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-
+            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(FILE);
+            String png = ("E:\\selenium-webdriver-java\\screenshots\\" + "TC01" + ".png");
             FileUtils.copyFile(scrFile, new File(png));
+//
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,4 +67,5 @@ public class Test01 {
         // End
         driver.quit();
     }
+
 }

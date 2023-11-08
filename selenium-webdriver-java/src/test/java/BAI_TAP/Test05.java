@@ -1,5 +1,6 @@
 package BAI_TAP;
 
+import POM.ShoppingCartPage;
 import driver.driverFactory;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static org.openqa.selenium.OutputType.FILE;
+
 public class Test05 {
     @Test
     public static void testTc05() {
@@ -18,7 +21,7 @@ public class Test05 {
         String firstName="Nguyen";
         String middleName="Minh Thien";
         String lastName="Phuc";
-        String emailAddress = "phuc890@gmail.com";
+        String emailAddress = "phuc892@gmail.com";
         String password= "123456";
         String confirmPassword= password;
         String emailShared= "share@gmail.com";
@@ -26,6 +29,8 @@ public class Test05 {
 
         WebDriver driver = driverFactory.getChromeDriver();
         try {
+            ShoppingCartPage shoppingCartPage = new ShoppingCartPage(driver);
+            SharedPage sharedPage = new SharedPage(driver);
             // Bước 1. Go to http://live.techpanda.org/
             driver.get("http://live.techpanda.org");
             Thread.sleep(2000);
@@ -65,18 +70,20 @@ public class Test05 {
             Thread.sleep(2000);
 
             // Bước 5. Verify Registration is done. Expected account registration done.
-            String successMessage = driver.findElement(By.cssSelector("li.success-msg span")).getText();
-            String successWelcome = driver.findElement(By.cssSelector("p[class='welcome-msg']")).getText();
-            if (successMessage.contains("Thank you for registering with Main Website Store.") && successWelcome.contains("WELCOME, " + firstName.toUpperCase() +" "+ middleName.toUpperCase() +" " + lastName.toUpperCase() + "!")) {
+            registerPage.registerWelcomeText();
+            registerPage.registerMessageText();
+            if (registerPage.registerMessageText().contains("Thank you for registering with Main Website Store.") && registerPage.registerWelcomeText().contains("WELCOME, " + firstName.toUpperCase() +" "+ middleName.toUpperCase() +" " + lastName.toUpperCase() + "!")) {
                 System.out.println("Account registration done.");
-                captureScreenshot(driver, "Account_Register_Success");
+                File scrFile = ((TakesScreenshot)driver).getScreenshotAs(FILE);
+                String png = ("E:\\selenium-webdriver-java\\screenshots\\" + "TC05" + "-Register-Success.png");
+                FileUtils.copyFile(scrFile, new File(png));
             } else {
                 System.out.println("Account registration failed.");
             }
             Thread.sleep(2000);
 
             // Bước 6. Go to TV menu
-            driver.findElement(By.linkText("TV")).click();
+            shoppingCartPage.TVMenuClick();
             Thread.sleep(2000);
             for (String handle : driver.getWindowHandles()) {
                 driver.switchTo().window(handle);
@@ -84,7 +91,7 @@ public class Test05 {
             Thread.sleep(2000);
 
             // Bước 7. Add product in your wish list - use product - LG LCD
-            driver.findElement(By.xpath("(//a[@class='link-wishlist'][normalize-space()='Add to Wishlist'])[1]")).click();
+            sharedPage.AddToWishListClick();
             Thread.sleep(2000);
             for (String handle : driver.getWindowHandles()) {
                 driver.switchTo().window(handle);
@@ -92,7 +99,7 @@ public class Test05 {
             Thread.sleep(2000);
 
             // Bước 8. Click SHARE WISHLIST
-            driver.findElement(By.xpath("(//span[contains(text(),'Share Wishlist')])[1]")).click();
+            shoppingCartPage.WishListClick();
             Thread.sleep(2000);
             for (String handle : driver.getWindowHandles()) {
                 driver.switchTo().window(handle);
@@ -101,18 +108,18 @@ public class Test05 {
 
             // Bước 9. In the next page, enter Email and a message, and click SHARE WISHLIST
 
-            SharedPage sharedPage = new SharedPage(driver);
+
             sharedPage.enterEmailShared(emailShared);
             sharedPage.enterMessageShared(message);
-            driver.findElement(By.cssSelector("button[title='Share Wishlist']")).click();
+            sharedPage.ShareWishListClick();
             Thread.sleep(2000);
 
 
             // Bước 10. Check wishlist is shared. Expected wishlist shared successfully.
-            String successMessage2 = driver.findElement(By.xpath("(//span[normalize-space()='Your Wishlist has been shared.'])[1]")).getText();
-            if (successMessage2.contains("Your Wishlist has been shared.")) {
+            sharedPage.ShareWishListMessageText();
+            if (sharedPage.ShareWishListMessageText().contains("Your Wishlist has been shared.")) {
                 System.out.println("Wishlist shared successfully.");
-                captureScreenshot(driver, "Wishlist_Sharing_Success");
+
             } else {
                 System.out.println("Wishlist sharing failed.");
 
@@ -127,16 +134,5 @@ public class Test05 {
         }
     }
 
-    private static void captureScreenshot(WebDriver driver, String screenshotName) {
-        TakesScreenshot ts = (TakesScreenshot) driver;
-        File source = ts.getScreenshotAs(OutputType.FILE);
-        String screenshotFileName = screenshotName + "_"  + ".png";
-        File destination = new File(System.getProperty("user.dir") + "/screenshots/" + screenshotFileName);
-        try {
-            FileUtils.copyFile(source, destination);
-            System.out.println("Screenshot saved: " + screenshotFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }
