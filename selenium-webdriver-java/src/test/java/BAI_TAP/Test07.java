@@ -16,7 +16,7 @@ import static org.openqa.selenium.OutputType.FILE;
 
 @Test
 public class Test07 {
-    public static void testTC06() {
+    public static void testTC07() {
         String emailAddress = "nhom6@gmail.com";
         String password = "123456";
 
@@ -78,16 +78,18 @@ public class Test07 {
 
             //Click on 'Print Order' link
             cartPage.clickPrintOrder();
-
+            Thread.sleep(2000);
             // switching to new window
             for (String handle : driver.getWindowHandles()) {
                 driver.switchTo().window(handle);
             }
-
+            Thread.sleep(4000);
+            // switching back to order window
+            for (String handle : driver.getWindowHandles()) {
+                driver.switchTo().window(handle);
+            }
+            Thread.sleep(2000);
             //Verify that you will be able to save previously placed order as a pdf file
-            // Không biết verify cái gì =)))
-
-            //Screenshot
             File scrFile = ((TakesScreenshot) driver).getScreenshotAs(FILE);
             String png = ("E:\\selenium-webdriver-java\\screenshots\\" + "TC07" + "_1.png");
             FileUtils.copyFile(scrFile, new File(png));
