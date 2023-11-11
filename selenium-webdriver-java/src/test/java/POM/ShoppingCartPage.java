@@ -99,7 +99,7 @@ public class ShoppingCartPage {
             System.out.println(grandTotalValue);
             return true;
         } else {
-            System.out.println("Price is not discounted by 5%");
+            System.out.println("FAIL!!!! Price is not discounted by 5%");
             System.out.println(grandTotalValue);
             return false;
         }
